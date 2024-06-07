@@ -1,4 +1,4 @@
-Cucumber project HRMSBAtch19-2024
+Cucumber project (Live Class) HRMSBAtch19-2024
 
 Links for report:
 
