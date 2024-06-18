@@ -101,6 +101,13 @@ public class CommonMethods {
     public static void jsHighlight(WebElement element) {
         jsExe().executeScript("arguments[0].setAttribute('style','border: 2px solid red');", element);
     }
+    public  static  WebDriverWait getwait(){
+        WebDriverWait wait= new WebDriverWait(driver,Duration.ofSeconds(20));
+        return  wait;
+    }
+    public static void waitForElementToBeVisible(String xPath){
+        getwait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xPath)));
+    }
 //    public static  WebDriver driver;
 //    public static void openBrowserAndLaunchApplication() throws IOException {
 //

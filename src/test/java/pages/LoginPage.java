@@ -22,8 +22,13 @@ public class LoginPage {
     @FindBy(id="welcome")
     public WebElement welcomePageLoc;
 
-    public void loginUserName() throws IOException {
-        userNameLoc.sendKeys(configReader.read("userName"));
+    public void loginUserName(boolean isAdmin) throws IOException {
+        if(isAdmin) {
+            userNameLoc.sendKeys(configReader.read("userName"));
+        }
+        else {
+            userNameLoc.sendKeys(configReader.read("ESSUserName"));
+        }
     }
 
     public void loginPassword() throws IOException {

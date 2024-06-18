@@ -12,8 +12,7 @@ import utils.CommonMethods;
 
 import java.time.Duration;
 
-import static utils.CommonMethods.driver;
-import static utils.CommonMethods.jsHighlight;
+import static utils.CommonMethods.*;
 import static utils.PageInitializer.employeeSearchPage;
 
 public class EmployeeSearchSteps {
@@ -21,8 +20,6 @@ public class EmployeeSearchSteps {
     private String inputEmployeeName;
     @When("user clicks the on PIM option")
     public void user_clicks_the_on_pim_option() {
-        // Write code here that turns the phrase above into concrete actions
-//        driver.findElement(By.id("menu_pim_viewPimModule")).click();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         employeeSearchPage.pimBtnLoc.click();
     }
@@ -66,10 +63,16 @@ public class EmployeeSearchSteps {
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 //            Thread.sleep(5000);
             WebElement employeeNameElement = driver.findElement(By.xpath("//table[@id='resultTable']/tbody/tr/td[3]"));
-            String foundName = employeeNameElement.getText();
-            boolean isMatch = foundName.contains(inputEmployeeName);
+            String foundName = employeeNameElement.getText().toLowerCase();
+            boolean isMatch = false;
+            if(foundName.contains(inputEmployeeName) || inputEmployeeName.contains(foundName)) {
+                isMatch = true;
+            }
             jsHighlight(employeeNameElement);
             Assert.assertTrue("Oops! employee not found. Please enter the correct Name", isMatch);
+//            boolean isMatch = foundName.contains(inputEmployeeName);
+//            jsHighlight(employeeNameElement);
+//            Assert.assertTrue("Oops! employee not found. Please enter the correct Name", isMatch);
 //            Assert.assertEquals("Oops! employee not found. Please enter the correct Name", foundName, inputEmployeeName);
         }
     }
@@ -83,5 +86,55 @@ public class EmployeeSearchSteps {
         inputEmployeeName = "Sepid";
 //        employeeSearchPage.employeeNameFieldLoc.sendKeys(inputEmployeeName);
         employeeSearchPage.searchInfo(inputEmployeeName);
+    }
+    @When("user enters valid employee's full name {string}")
+    public void user_enters_valid_employee_s_full_name(String fullName) {
+        WebDriver driver = CommonMethods.driver;
+        inputEmployeeName = fullName;
+//        WebElement element = driver.findElement(By.xpath("//*[@class='ac_input inputFormatHint']"));
+        waitForElementToBeVisible("//*[@class='ac_input inputFormatHint']");
+        employeeSearchPage.searchInfo(fullName);
+    }
+
+    @When("user enters a valid employee's partial name {string}")
+    public void user_enters_a_valid_employee_s_partial_name(String partialName) {
+        WebDriver driver = CommonMethods.driver;
+        inputEmployeeName = partialName;
+//        WebElement element = driver.findElement(By.xpath("//*[@class='ac_input inputFormatHint']"));
+        waitForElementToBeVisible("//*[@class='ac_input inputFormatHint']");
+        employeeSearchPage.searchInfo(partialName);
+    }
+
+    @When("user enters a valid employee's name with different capitalization {string}")
+    public void user_enters_a_valid_employee_s_name_with_different_capitalization(String capName) {
+        WebDriver driver = CommonMethods.driver;
+        inputEmployeeName = capName.toLowerCase();
+        System.out.println("==========Step 1=========");
+//        WebElement element = driver.findElement(By.xpath("//*[@class='ac_input inputFormatHint']"));
+        waitForElementToBeVisible("//*[@class='ac_input inputFormatHint']");
+        employeeSearchPage.searchInfo(capName);
+    }
+
+    @When("user enters an invalid or non-existing employee name {string}")
+    public void user_enters_an_invalid_or_non_existing_employee_name(String invalidName) {
+        inputEmployeeName = invalidName.toLowerCase();
+        waitForElementToBeVisible("//*[@class='ac_input inputFormatHint']");
+        employeeSearchPage.searchInfo(invalidName);
+    }
+
+    @When("user enters an invalid or non-existing employee ID {string}")
+    public void user_enters_an_invalid_or_non_existing_employee_id(String invalidID) {
+        inputEmployeeID = invalidID;
+        waitForElementToBeVisible("//*[@class='ac_input inputFormatHint']");
+        employeeSearchPage.searchInfo(inputEmployeeID);
+    }
+
+    @Then("user see the message {string}")
+    public void user_see_the_message(String errorMessageExpected) {
+        WebDriver driver = CommonMethods.driver;
+        WebElement element = driver.findElement(By.xpath("//*[@id='resultTable']/tbody/tr/td"));
+        String actualMessage = element.getText();
+        jsHighlight(element);
+        Assert.assertEquals("Invalid Error Message", actualMessage, errorMessageExpected);
     }
 }

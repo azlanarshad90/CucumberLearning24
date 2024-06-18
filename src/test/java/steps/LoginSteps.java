@@ -26,7 +26,7 @@ public class LoginSteps  {
 //        WebElement passwordField=driver.findElement(By.cssSelector("input#txtPassword"));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 //        loginPage.userNameLoc.sendKeys(configReader.read("userName"));
-        loginPage.loginUserName();
+        loginPage.loginUserName(true);
 //        DOMConfigurator.configure("log4j2.xml");
         Log.startTestCase("Login: Valid Test Scenario\n");
         Log.info("Username entered");
@@ -45,11 +45,26 @@ public class LoginSteps  {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         loginPage.loginBtnLoc.click();
     }
+
+    @When("user enters valid ESS user login details")
+    public void user_enters_valid_ess_user_login_details() throws IOException {
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        loginPage.loginUserName(false);
+        loginPage.loginPassword();
+    }
+
     @Then("user is successfully logged in")
     public void user_is_successfully_logged_in() {
         // Write code here that turns the phrase above into concrete actions
 //        throw new io.cucumber.java.PendingException();
 //        System.out.println("Successfully Logged In");
-        Assert.assertEquals("Welcome Admin", loginPage.welcomePageLoc.getText());
+//        Assert.assertEquals("Welcome Admin", loginPage.welcomePageLoc.getText());
+        String actualMessage = loginPage.welcomePageLoc.getText();
+        if(actualMessage.contains("Welcome")) {
+            Assert.assertTrue(true);
+        }
+        else {
+            Assert.assertTrue("Check the credentials again", false);
+        }
     }
 }

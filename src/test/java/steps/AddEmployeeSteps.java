@@ -4,6 +4,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import utils.ExcelReader;
 import utils.constants;
@@ -21,6 +22,14 @@ public class AddEmployeeSteps {
         // Write code here that turns the phrase above into concrete actions
 //        throw new io.cucumber.java.PendingException();
         driver.findElement(By.id("menu_pim_addEmployee")).click();
+        WebElement error = driver.findElement(By.id("validation-error"));
+        String errorMsg = error.getText();
+        if(errorMsg.equalsIgnoreCase("Required")) {
+            Assert.assertTrue(true);
+        }
+        else {
+            Assert.assertTrue(false);
+        }
     }
     @When("user enters firstName, middleName and lastName")
     public void user_enters_first_name_middle_name_and_last_name() {
